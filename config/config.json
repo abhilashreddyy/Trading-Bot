@@ -1,0 +1,16 @@
+{
+    "exchangeConf" : {
+        "exchange" : "binance",
+        "conversion" : "ETHBUSD", 
+        "timeFrame" : "15m", 
+        "lastNCandles" : 30
+    },
+    "algorithm" : "movingAverage",
+    "algoConfig":{
+        "movingAverage" : {
+            "slowN" : 20,
+            "fastN" : 10
+        }
+    }
+    
+}
