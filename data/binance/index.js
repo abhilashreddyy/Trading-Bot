@@ -1,6 +1,6 @@
 const Binance = require('node-binance-api');
 const keys = require("../../config/keys.json").binance;
-const queries = require("./queries");
+const Queries = require("./queries");
 
 const init = () => {
     const binance = new Binance().options({
@@ -12,5 +12,5 @@ const init = () => {
 
 module.exports = {
     init,
-    queries
+    Queries
 }

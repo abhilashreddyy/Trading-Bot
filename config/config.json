@@ -1,16 +1,24 @@
 {
-    "exchangeConf" : {
-        "exchange" : "binance",
-        "conversion" : "ETHBUSD", 
-        "timeFrame" : "15m", 
-        "lastNCandles" : 30
-    },
+    "simulation" : true,
+    "exchange" : "binance",
+    "conversion" : "ETHBUSD", 
     "algorithm" : "movingAverage",
     "algoConfig":{
         "movingAverage" : {
             "slowN" : 20,
-            "fastN" : 10
+            "fastN" : 10,
+            "lastNCandles" : 30,
+            "data" : {
+                "type" : "candles",
+                "timeFrame" : "15m"
+            },
+            "fetchConfig" : {
+                "nTest" : 200
+            }
         }
+    },
+    "simulationConfig" : {
+        "steps" : 500
     }
     
 }

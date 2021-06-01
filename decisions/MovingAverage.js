@@ -12,7 +12,10 @@ class MovingAvg{
         this.initialCalculation()
     }
 
+
+
     initialCalculation(){
+        // console.log(this.prevCandles)
         if(this.prevCandles.length < this.n){
             return // Throw error
         }
@@ -41,20 +44,41 @@ class MovingAvg{
         return this.prevMovingAvg[this.prevMovingAvg.length-l]
     }
 
+
+
 }
 
 
 
 
 class MovingAverageAlgo{
-    constructor(lastNCandles, config){//lastNCandles.length >= slowN
+    constructor(config, queryObj){//lastNCandles.length >= slowN
         // this.transactionHistory = new decionObj.transactionHistory()
-        this.fastMovingAvg = new MovingAvg(config.fastN,lastNCandles)
-        this.slowMovingAvg = new MovingAvg(config.slowN, lastNCandles)
-        this.currentStatus = this.getCurrentStatus()
+        
+        this.currentStatus = null
         this.lastDecision = null
+        this.queryObj = queryObj
+        this.exchange = config.exchange
+        this.conversion = config.conversion
+
+        this.config = config.algoConfig[config.algorithm]
+        
+
+        this.fastMovingAvg = null
+        this.slowMovingAvg = null
+
+        
     }
 
+    async initialFetch(){
+        let prevCandles = await this.queryObj.getCandleVals
+                                            (this.conversion, this.config.data.timeFrame, 
+                                                this.config.lastNCandles)
+        // console.log("hello ; ",prevCandles)
+        this.fastMovingAvg = new MovingAvg(this.config.fastN,prevCandles)
+        this.slowMovingAvg = new MovingAvg(this.config.slowN, prevCandles)
+        this.currentStatus = this.getCurrentStatus()
+    }
 
     updateCandles(candleObj, lastTransaction = null){
         this.fastMovingAvg.update(candleObj)
@@ -65,21 +89,33 @@ class MovingAverageAlgo{
 
 
 
-    whatToDo(){
+    async whatToDo(){
         if(this.isCrossing()){
             if(this.currentStatus == "raising"){
                 this.currentStatus = this.getCurrentStatus()
-                return "sell"
+                return {
+                    "action" : "sell",
+                    "time" : await this.queryObj.getTime(),
+                    "price" : await this.queryObj.getcurrentPrice(this.exchange),
+                    "fraction" : 1
+                }
             }
             else if(this.currentStatus == "falling"){
                 this.currentStatus = this.getCurrentStatus()
-                return "buy"
+                return {
+                    "action" : "buy",
+                    "time" : await this.queryObj.getTime(),
+                    "price" : await this.queryObj.getcurrentPrice(this.exchange),
+                    "fraction" : 1
+                }
             }
         }
         else{
-            return "observe"
+            return {
+                "action" : "observe",
+                "time" : await this.queryObj.getTime()
+            }
         }
-        
     }
 
     isCrossing(){

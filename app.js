@@ -1,16 +1,25 @@
 const config = require("./config/config")
-const exchangeQuery = require(`./data`)[config.exchangeConf.exchange];
+const exchangeMain = require(`./data`)[config.exchange];
+const simulationMain = require(`./data`)["simulation"]
 var tradingDecision = require("./decisions")
 
 
-exchangeObj = exchangeQuery.init()
+async function init(){
+    var exchangeObj = exchangeMain.init()
+    var queryObj = new exchangeMain.Queries(exchangeObj)
+    if(config.simulation){
+        queryObj = new simulationMain.Queries(queryObj, config)
+        await queryObj.initialFetch()
+    }
+
+    let tradingAlgo = tradingDecision[config.algorithm]
+    let tradingObj = new tradingAlgo(config, queryObj)
+    await tradingObj.initialFetch()
+    
+    console.log(await tradingObj.whatToDo())
 
 
-exchangeQuery.queries.getCandleVals(exchangeObj,
-                        config.exchangeConf.conversion, config.exchangeConf.timeFrame,
-                         config.exchangeConf.lastNCandles).then((allTicks)=>{
-    tradingAlgo = tradingDecision[config.algorithm]
-    let tradingObj = new tradingAlgo(allTicks, config.algoConfig[config.algorithm])
-    console.log(tradingObj.whatToDo())
-})
 
+}
+
+init()
