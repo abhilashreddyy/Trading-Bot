@@ -94,7 +94,7 @@ class MovingAverageAlgo{
     async updateCandles(){
         let candleObj = await this.queryObj.getCandleVals(this.conversion, 
                                     this.config.data.timeFrame, 1)[0]
-        console.log(candleObj)
+        console.log(candleObj, this.currentStatus)
         var c = new Date(candleObj.closeTime);
         var o = new Date(candleObj.time);
 

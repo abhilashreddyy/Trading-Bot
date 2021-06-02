@@ -15,13 +15,13 @@ class Queries{
     }
 
     async initFetchCandles(){
+        console.log(`fetching ${this.config.fetchConfig.nTest} candles for simulation`)
         return await this.queryObj.getCandleVals
                         (this.conversion, this.config.data.timeFrame,
                             this.config.fetchConfig.nTest)
     }
 
     getCandleVals(conversion, duration, limit){
-
         if(this.config.data.timeFrame == duration && this.conversion == conversion){
             var currVals = this.nPast.slice(this.i, this.i+limit);
             this.i+=limit
@@ -33,7 +33,7 @@ class Queries{
     }
 
     getTime(){
-        return this.queryObj.getTime()
+        return this.nPast[this.i].time
     }
 
     getcurrentPrice(conversion){
