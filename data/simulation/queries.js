@@ -37,8 +37,8 @@ class Queries{
     }
 
     getcurrentPrice(conversion){
-        if(this.data.type == "candles"){
-            return this.nPast[i].open
+        if(this.config.data.type == "candles"){
+            return this.nPast[this.i].open
         }
     }
     

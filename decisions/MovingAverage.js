@@ -21,18 +21,27 @@ class MovingAvg{
         }
         else{
             for(let i = this.n; i <= this.prevCandles.length; i++){
-                this.prevMovingAvg.push(this.calculateMovingAvg(i))
+                this.prevMovingAvg.push(this.calculateMovingAvg(i, 0))
             }
         }
     }
 
-    calculateMovingAvg(i){ // i == index in prevCandles
+    calculateMovingAvg(i, temp = 1){ // i == index in prevCandles
         let result = 0;
-        this.prevCandles.slice(i-this.n, i).forEach(element => {
-            result += (element.open+element.close)/2; // moving avg logic
-        });
-        return result
+        let tempSlice = this.prevCandles.slice(i-this.n, i)
+        // console.log("prev candles : ", this.prevCandles)
+        
+        
+        for(let i = 0; i < tempSlice.length; i++){
+            
+            
+            // result += (parseFloat(tempSlice[i].open)+parseFloat(tempSlice[i].close))/2;
+            result += parseFloat(tempSlice[i].close)
+        }
+        // moving avg logic
+        return result/this.n
     }
+
 
     update(candleObj){
         this.prevCandles.push(candleObj)
@@ -41,7 +50,9 @@ class MovingAvg{
     }
 
     getLatestNAvg(l){
-        return this.prevMovingAvg[this.prevMovingAvg.length-l]
+        // console.log(this.prevMovingAvg)
+
+        return this.prevMovingAvg[this.prevMovingAvg.length-l-1]
     }
 
 
@@ -80,10 +91,17 @@ class MovingAverageAlgo{
         this.currentStatus = this.getCurrentStatus()
     }
 
-    updateCandles(candleObj, lastTransaction = null){
+    async updateCandles(){
+        let candleObj = await this.queryObj.getCandleVals(this.conversion, 
+                                    this.config.data.timeFrame, 1)[0]
+        console.log(candleObj)
+        var c = new Date(candleObj.closeTime);
+        var o = new Date(candleObj.time);
+
+        console.log("time :",o,c)
         this.fastMovingAvg.update(candleObj)
         this.slowMovingAvg.update(candleObj)
-        this.lastTransaction.update(lastTransaction)
+        // this.lastTransaction.update(lastTransaction)
         // this.whatToDo()
     }
 
@@ -95,7 +113,7 @@ class MovingAverageAlgo{
                 this.currentStatus = this.getCurrentStatus()
                 return {
                     "action" : "sell",
-                    "time" : await this.queryObj.getTime(),
+                    // "time" : await this.queryObj.getTime(),
                     "price" : await this.queryObj.getcurrentPrice(this.exchange),
                     "fraction" : 1
                 }
@@ -104,7 +122,7 @@ class MovingAverageAlgo{
                 this.currentStatus = this.getCurrentStatus()
                 return {
                     "action" : "buy",
-                    "time" : await this.queryObj.getTime(),
+                    // "time" : await this.queryObj.getTime(),
                     "price" : await this.queryObj.getcurrentPrice(this.exchange),
                     "fraction" : 1
                 }
@@ -119,6 +137,8 @@ class MovingAverageAlgo{
     }
 
     isCrossing(){
+        console.log("slow moving : ", this.slowMovingAvg.getLatestNAvg(0))
+        console.log("fast moving : ", this.fastMovingAvg.getLatestNAvg(0))
         if(this.slowMovingAvg.getLatestNAvg(1) > this.fastMovingAvg.getLatestNAvg(1) &&
            this.slowMovingAvg.getLatestNAvg(0) < this.fastMovingAvg.getLatestNAvg(0)){
             return 1
@@ -133,6 +153,8 @@ class MovingAverageAlgo{
     }
 
     getCurrentStatus(){
+        
+
         if(this.slowMovingAvg.getLatestNAvg(0) > this.fastMovingAvg.getLatestNAvg(0)){
             return "falling"
         }

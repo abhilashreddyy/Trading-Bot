@@ -13,7 +13,7 @@
                 "timeFrame" : "15m"
             },
             "fetchConfig" : {
-                "nTest" : 200
+                "nTest" : 100
             }
         }
     },
