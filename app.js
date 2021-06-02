@@ -27,7 +27,7 @@ async function init(){
                 console.log("start")
                 await tradingObj.updateCandles()
                 result = await tradingObj.whatToDo()
-                console.log(result,"\n\n")
+                console.log("action : ",result,"\n\n")
                 
             }
         }

@@ -1,4 +1,5 @@
 
+const { movingAverage } = require(".")
 var decionObj = require("./utils/objects")
 
 
@@ -20,7 +21,11 @@ class MovingAvg{
             return // Throw error
         }
         else{
+            console.log("calculating initial moving averages")
+            console.log("length of moving AVG : ",this.n)
+            console.log("length of all candles : ",this.prevCandles.length)
             for(let i = this.n; i <= this.prevCandles.length; i++){
+                console.log("prev candles : ", i-this.n, i)
                 this.prevMovingAvg.push(this.calculateMovingAvg(i, 0))
             }
         }
@@ -31,21 +36,28 @@ class MovingAvg{
         let tempSlice = this.prevCandles.slice(i-this.n, i)
         // console.log("prev candles : ", this.prevCandles)
         
+
         
         for(let i = 0; i < tempSlice.length; i++){
-            
-            
+            console.log("current candleval : ", tempSlice[i])
+            console.log("current moving Avg closing val/time/closeTime : ",tempSlice[i].close," / ",(new Date(tempSlice[i].time)), (new Date(tempSlice[i].closeTime)))
             // result += (parseFloat(tempSlice[i].open)+parseFloat(tempSlice[i].close))/2;
             result += parseFloat(tempSlice[i].close)
         }
         // moving avg logic
-        return result/this.n
+        var val = result/this.n
+        console.log("moving average : ",val, "\n")
+        return val
     }
 
 
     update(candleObj){
+        console.log("updating moving avg")
+        console.log("pushing new candle val : ", candleObj)
         this.prevCandles.push(candleObj)
+        
         let newMovingAvg = this.calculateMovingAvg(this.prevCandles.length-1)
+        console.log("calculating moving average : ", newMovingAvg)
         this.prevMovingAvg.push(newMovingAvg)
     }
 
@@ -94,11 +106,12 @@ class MovingAverageAlgo{
     async updateCandles(){
         let candleObj = await this.queryObj.getCandleVals(this.conversion, 
                                     this.config.data.timeFrame, 1)[0]
-        console.log(candleObj, this.currentStatus)
+
+        console.log("current candle Obj : ", candleObj)
         var c = new Date(candleObj.closeTime);
         var o = new Date(candleObj.time);
 
-        console.log("time :",o,c)
+        console.log("time and closing time:",o,c)
         this.fastMovingAvg.update(candleObj)
         this.slowMovingAvg.update(candleObj)
         // this.lastTransaction.update(lastTransaction)
@@ -108,6 +121,7 @@ class MovingAverageAlgo{
 
 
     async whatToDo(){
+        console.log("current status : ", this.currentStatus)
         if(this.isCrossing()){
             if(this.currentStatus == "raising"){
                 this.currentStatus = this.getCurrentStatus()
@@ -129,6 +143,7 @@ class MovingAverageAlgo{
             }
         }
         else{
+            this.currentStatus = this.getCurrentStatus()
             return {
                 "action" : "observe",
                 "time" : await this.queryObj.getTime()
@@ -137,8 +152,8 @@ class MovingAverageAlgo{
     }
 
     isCrossing(){
-        console.log("slow moving : ", this.slowMovingAvg.getLatestNAvg(0))
-        console.log("fast moving : ", this.fastMovingAvg.getLatestNAvg(0))
+        console.log("slow moving avg curr/last: ", this.slowMovingAvg.getLatestNAvg(0), this.slowMovingAvg.getLatestNAvg(1))
+        console.log("fast moving avg curr/last: ", this.fastMovingAvg.getLatestNAvg(0), this.fastMovingAvg.getLatestNAvg(1))
         if(this.slowMovingAvg.getLatestNAvg(1) > this.fastMovingAvg.getLatestNAvg(1) &&
            this.slowMovingAvg.getLatestNAvg(0) < this.fastMovingAvg.getLatestNAvg(0)){
             return 1
@@ -154,8 +169,10 @@ class MovingAverageAlgo{
 
     getCurrentStatus(){
         
+        
 
         if(this.slowMovingAvg.getLatestNAvg(0) > this.fastMovingAvg.getLatestNAvg(0)){
+
             return "falling"
         }
         else{

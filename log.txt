@@ -1,0 +1,9 @@
+fetching initial stuff for simulation
+fetching 100 candles for simulation
+Error: getaddrinfo EAI_AGAIN api.binance.com
+    at GetAddrInfoReqWrap.onlookup [as oncomplete] (node:dns:69:26) {
+  errno: -3001,
+  code: 'EAI_AGAIN',
+  syscall: 'getaddrinfo',
+  hostname: 'api.binance.com'
+}
