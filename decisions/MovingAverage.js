@@ -146,7 +146,7 @@ class MovingAverageAlgo{
     }
 
     async initialFetch(){
-        let prevCandles = await this.queryObj.getCandleVals
+        let prevCandles = await this.queryObj.getCandles
                                             (this.conversion, this.config.data.timeFrame, 
                                                 this.config.lastNCandles)
         // console.log("hello ; ",prevCandles)
@@ -156,7 +156,7 @@ class MovingAverageAlgo{
     }
 
     async updateCandles(){
-        let candleObj = await this.queryObj.getCandleVals(this.conversion, 
+        let candleObj = await this.queryObj.getCandles(this.conversion, 
                                     this.config.data.timeFrame, 1)[0]
         console.log("current candle Obj : ", candleObj)
         var c = new Date(candleObj.closeTime);
@@ -182,7 +182,7 @@ class MovingAverageAlgo{
                     return {
                         "action" : "sell",
                         // "time" : await this.queryObj.getTime(),
-                        "price" : await this.queryObj.getcurrentPrice(this.exchange),
+                        "price" : await this.queryObj.getPrice(this.exchange),
                         "fastSlope" : this.fastMovingAvg.getLastNSlope(0),
                         "slowSlope" : this.slowMovingAvg.getLastNSlope(0),
                         "fraction" : 1
@@ -191,7 +191,7 @@ class MovingAverageAlgo{
                 else{
                     return {
                         "action" : "sell skip",
-                        "price" : await this.queryObj.getcurrentPrice(this.exchange),
+                        "price" : await this.queryObj.getPrice(this.exchange),
                         "fastSlope" : this.fastMovingAvg.getLastNSlope(0),
                         "slowSlope" : this.slowMovingAvg.getLastNSlope(0),
                         "time" : await this.queryObj.getTime()
@@ -209,14 +209,14 @@ class MovingAverageAlgo{
                         // "time" : await this.queryObj.getTime(),
                         "fastSlope" : this.fastMovingAvg.getLastNSlope(0),
                         "slowSlope" : this.slowMovingAvg.getLastNSlope(0),
-                        "price" : await this.queryObj.getcurrentPrice(this.exchange),
+                        "price" : await this.queryObj.getPrice(this.exchange),
                         "fraction" : 1
                     }
                 }
                 else{
                     return {
                         "action" : "buy skip",
-                        "price" : await this.queryObj.getcurrentPrice(this.exchange),
+                        "price" : await this.queryObj.getPrice(this.exchange),
                         "fastSlope" : this.fastMovingAvg.getLastNSlope(0),
                         "slowSlope" : this.slowMovingAvg.getLastNSlope(0),
                         "time" : await this.queryObj.getTime()
