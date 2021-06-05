@@ -16,12 +16,12 @@ class Queries{
 
     async initFetchCandles(){
         console.log(`fetching ${this.config.fetchConfig.nTest} candles for simulation`)
-        return await this.queryObj.getCandleVals
+        return (await this.queryObj.getCandles
                         (this.conversion, this.config.data.timeFrame,
-                            this.config.fetchConfig.nTest)
+                            this.config.fetchConfig.nTest));
     }
 
-    getCandleVals(conversion, duration, limit){
+    getCandles(conversion, duration, limit){
         if(this.config.data.timeFrame == duration && this.conversion == conversion){
             var currVals = this.nPast.slice(this.i, this.i+limit);
             this.i+=limit
@@ -36,7 +36,7 @@ class Queries{
         return this.nPast[this.i].time
     }
 
-    getcurrentPrice(conversion){
+    getPrice(conversion){
         if(this.config.data.type == "candles"){
             return this.nPast[this.i-1].open
         }

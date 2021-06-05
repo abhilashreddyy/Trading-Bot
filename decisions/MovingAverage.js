@@ -1,10 +1,3 @@
-
-const { movingAverage } = require(".")
-var decionObj = require("./utils/objects")
-
-
-
-
 class MovingAvg{
     constructor(n, lastNCandles){
         this.n = n
