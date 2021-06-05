@@ -1,24 +1,29 @@
 {
     "simulation" : true,
     "exchange" : "binance",
-    "conversion" : "ETHBUSD", 
+    "conversion" : "ETHUSDT", 
     "algorithm" : "movingAverage",
     "algoConfig":{
         "movingAverage" : {
             "slowN" : 20,
             "fastN" : 10,
-            "lastNCandles" : 30,
+            "lastNCandles" : 50,
             "data" : {
                 "type" : "candles",
                 "timeFrame" : "15m"
             },
             "fetchConfig" : {
-                "nTest" : 100
+                "nTest" : 900
             }
         }
     },
     "simulationConfig" : {
         "steps" : 500
+    },
+    "database" : {
+        "mysql" : {
+            "host"     : "localhost"
+        }
     }
     
 }
