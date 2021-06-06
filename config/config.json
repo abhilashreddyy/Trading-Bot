@@ -6,7 +6,7 @@
     "algoConfig":{
         "movingAverage" : {
             "slowN" : 20,
-            "fastN" : 5,
+            "fastN" : 10,
             "lastNCandles" : 50,
             "data" : {
                 "type" : "candles",

@@ -62,7 +62,7 @@ class MovingAvg{
             // console.log(`current candleval ${i} : `, tempSlice[i])
             console.log("current moving Avg closing val/time/closeTime : ",tempSlice[i].close," / ",(new Date(tempSlice[i].time)), (new Date(tempSlice[i].closeTime)))
             // result += (parseFloat(tempSlice[i].open)+parseFloat(tempSlice[i].close))/2;
-            result += parseFloat(tempSlice[i][this.metric])
+            result += tempSlice[i][this.metric]
         }
         // moving avg logic
         var val = result/this.n
@@ -156,8 +156,10 @@ class MovingAverageAlgo{
     }
 
     async updateCandles(){
+        
         let candleObj = await this.queryObj.getCandles(this.conversion, 
-                                    this.config.data.timeFrame, 1)[0]
+                                    this.config.data.timeFrame, 1)
+        candleObj = candleObj[0]
         console.log("current candle Obj : ", candleObj)
         var c = new Date(candleObj.closeTime);
         var o = new Date(candleObj.time);

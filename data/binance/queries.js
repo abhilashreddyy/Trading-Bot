@@ -1,12 +1,13 @@
 class Queries {
     constructor(exchange, config) {
         this.exchange = exchange;
-        this.config = config.algoConfig[config.algorithm];
+        this.algoConfig = config.algoConfig[config.algorithm];
+        this.config = config
     }
 
     async initialFetch() {
         // TODO: Push the candles to db
-        await this.getCandles(this.conversion, this.config.data.timeFrame, this.config.lastNCandles);
+        await this.getCandles(this.config.conversion, this.algoConfig.data.timeFrame, this.algoConfig.lastNCandles);
     }
 
     async getCandles(pair, candleSize, noOfCandles) {
@@ -21,10 +22,10 @@ class Queries {
                 for(let i = 0; i < ticks.length; i++){
                     allTicks.push({
                         "time" : ticks[i][0],
-                        "high" : ticks[i][2],
-                        "low" : ticks[i][3],
-                        "open" : ticks[i][1],
-                        "close" : ticks[i][4],
+                        "high" : parseFloat(ticks[i][2]),
+                        "low" : parseFloat(ticks[i][3]),
+                        "open" : parseFloat(ticks[i][1]),
+                        "close" : parseFloat(ticks[i][4]),
                         "closeTime" : ticks[i][6]
                     })
                 }

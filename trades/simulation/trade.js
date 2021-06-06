@@ -3,6 +3,7 @@ ledger = []
 
 class Trader{
     constructor(currency1 = 0, currency2 = 1, conversion = 0){
+        console.log("conversion : ", conversion)
         this.currency1 = currency1
         this.currency2 = currency2
         this.initialMoney = currency1 + conversion * currency2
@@ -38,7 +39,7 @@ class Trader{
             this.ledger.push(tradeObj)
         }
         else if(tradeObj.action == "sell" && this.currency2 > 0){
-            
+            console.log(this.currency1 ,this.initialMoney)
             tradeObj["currency1BeforeTrade"] = this.currency1
             tradeObj["currency2BeforeTrade"] = this.currency2
             this.currency1 = this.convertC2ToC1(this.currency2, tradeObj.price, tradeObj.fraction)

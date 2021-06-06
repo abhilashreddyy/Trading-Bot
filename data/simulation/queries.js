@@ -16,20 +16,25 @@ class Queries{
 
     async initFetchCandles(){
         console.log(`fetching ${this.config.fetchConfig.nTest} candles for simulation`)
+        
         return (await this.queryObj.getCandles
                         (this.conversion, this.config.data.timeFrame,
                             this.config.fetchConfig.nTest));
     }
 
     getCandles(conversion, duration, limit){
-        if(this.config.data.timeFrame == duration && this.conversion == conversion){
-            var currVals = this.nPast.slice(this.i, this.i+limit);
-            this.i+=limit
-            return currVals
-        }
-        else{
-            console.log("error there is a mismatch")
-        }
+        return new Promise((resolve,reject)=>{
+            if(this.config.data.timeFrame == duration && this.conversion == conversion){
+                var currVals = this.nPast.slice(this.i, this.i+limit);
+                this.i+=limit
+                console.log("resolving")
+                resolve(currVals)
+            }
+            else{
+                reject("error there is a mismatch")
+            }
+        })
+        
     }
 
     getTime(){
@@ -37,7 +42,9 @@ class Queries{
     }
 
     getPrice(conversion){
+        
         if(this.config.data.type == "candles"){
+            console.log("getting price", this.i)
             return this.nPast[this.i-1].open
         }
     }
