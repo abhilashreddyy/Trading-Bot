@@ -1,12 +1,17 @@
-
-class Queries{
-    constructor(binance){
-        this.binance = binance
+class Queries {
+    constructor(exchange, config) {
+        this.exchange = exchange;
+        this.config = config.algoConfig[config.algorithm];
     }
 
-    getCandleVals(conversion, duration, limit){
+    async initialFetch() {
+        // TODO: Push the candles to db
+        await this.getCandles(this.conversion, this.config.data.timeFrame, this.config.lastNCandles);
+    }
+
+    async getCandles(pair, candleSize, noOfCandles) {
         return new Promise((resolve, reject) => {
-            this.binance.candlesticks(conversion, duration, (error, ticks, symbol) => {
+            this.exchange.candlesticks(pair, candleSize, (error, ticks, symbol) => {
                 if(error) {
                     reject(error);
                     return;
@@ -24,15 +29,14 @@ class Queries{
                     })
                 }
                 resolve(allTicks);
-            }, {limit: limit});
+            }, {limit: noOfCandles});
         })
-        
     }
     
     
-    getcurrentPrice(conversion){
+    async getPrice(pair) {
         return new Promise((resolve, reject)=>{
-            this.binance.prices(conversion, (error, ticker) => {
+            this.exchange.prices(pair, (error, ticker) => {
                 if(error){
                     reject(error)
                     retrun 
@@ -41,11 +45,11 @@ class Queries{
             });
         });
     }
-
-    getTime(){
-        return this.binance.futuresTime()
+    
+    async getTime() {
+        return this.exchange.futuresTime()
     }
 }
 
 
-module.exports = Queries
+module.exports = Queries;
