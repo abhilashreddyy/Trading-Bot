@@ -1,6 +1,7 @@
 {
     "simulation" : true,
     "exchange" : "binance",
+    "maxElementsPerRequest" : 499,
     "conversion" : "ETHUSDT", 
     "algorithm" : "movingAverage",
     "algoConfig":{

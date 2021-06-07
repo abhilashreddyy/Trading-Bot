@@ -1,5 +1,7 @@
 const binance = require("./binance");
 const simulation = require("./simulation");
+const config = require("../config/config");
+
 
 
 const data = {
@@ -8,11 +10,12 @@ const data = {
 };
 
 class Data {
-    constructor(exchangeName, isSimulation) {
+    constructor(exchangeName, isSimulation, mysqlOps) {
+        this.mysqlOps = mysqlOps
         if(isSimulation) {
             exchangeName = "simulation";
         }
-        const createdDataInstance = data[exchangeName]();
+        const createdDataInstance = data[exchangeName](this.mysqlOps);
         this.exchange = createdDataInstance.exchange;
         this.queries = createdDataInstance.queries;
     }

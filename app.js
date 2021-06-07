@@ -1,6 +1,8 @@
 const config = require("./config/config.json");
 const Data = require(`./data`);
 var tradingDecision = require("./decisions")
+var dbOps = require("./dbs")
+
 
 console.log(config.simulation)
 if(config.simulation){
@@ -13,7 +15,9 @@ else{
 console.log(Trader)
 
 async function init(){
-    const dataInstance = new Data(config.exchange, config.simulation);
+    mysqlOps = new dbOps.mysqlOps(config)
+    await mysqlOps.init()
+    const dataInstance = new Data(config.exchange, config.simulation, mysqlOps);
     await dataInstance.initialFetch();
     console.log("data instance : ",Object.getOwnPropertyNames(dataInstance))
 
@@ -36,8 +40,10 @@ async function init(){
             
         }
         // return;
+        console.log("ledger details : ",traderObj.ledger)
+        mysqlOps.terminate()
     }
-    console.log("ledger details : ",traderObj.ledger)
+    
     // tradeObj = await algoInstance.whatToDo()
 }
 

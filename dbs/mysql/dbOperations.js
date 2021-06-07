@@ -1,8 +1,10 @@
 const models = require("./models")
 const mysql = require("mysql")
+const keys = require("../../config/keys.json");
+
 
 class Connection{
-    constructor(keys, config){
+    constructor(config){
         this.connection = mysql.createConnection({
             host     : config.database.mysql.host,
             user     : keys.database.mysql.user,
@@ -17,8 +19,8 @@ class Connection{
 }
 
 class Operations{
-    constructor(keys, config){
-        this.connection = new Connection(keys, config)
+    constructor(config){
+        this.connection = new Connection(config)
         this.connection = this.connection.connect()
         this.config = config
         this.candlesTable = new models.candlesTable(this.connection, this.config, this.getCandlesTableName())
@@ -40,6 +42,10 @@ class Operations{
         var algorithm = this.config.algorithm
         return this.config.conversion + "_transaction"
                 + ((this.config.simulation) ? "_simulation" : "")
+    }
+
+    terminate(){
+        this.connection.end()
     }
 
 

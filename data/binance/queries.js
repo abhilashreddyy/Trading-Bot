@@ -1,8 +1,12 @@
+const utils = require("../../utils")
+
+
 class Queries {
-    constructor(exchange, config) {
+    constructor(exchange, mysqlOps, config) {
         this.exchange = exchange;
         this.algoConfig = config.algoConfig[config.algorithm];
         this.config = config
+        this.mysqlOps = mysqlOps
     }
 
     async initialFetch() {
@@ -10,7 +14,58 @@ class Queries {
         await this.getCandles(this.config.conversion, this.algoConfig.data.timeFrame, this.algoConfig.lastNCandles);
     }
 
-    async getCandles(pair, candleSize, noOfCandles) {
+    async getCandles(pair, candleSize, noOfCandles){
+        var timeStampsRange = utils.lib.time.getUnixTimestampsRange(this.config.exchange, candleSize, noOfCandles)
+        var UnavailableTimeRanges = await this.mysqlOps.candlesTable.getUnavailableTimeRanges(timeStampsRange)
+        var i = 0
+        while(i < UnavailableTimeRanges.length){
+            try{
+                var candles = await this.getCandlesfromApi(pair, candleSize, 0, UnavailableTimeRanges[i][0], UnavailableTimeRanges[i][1])
+                for(var n = 0; i < candles.length; n++){
+                    await this.mysqlOps.candlesTable.addRow(candles[n])
+                }   
+                i+=1
+                setTimeout({},300)
+            }
+            catch(error){
+                console.log("error : ",error)
+                setTimeout({},300)
+            }
+        }
+        var allTicks = []
+        var ticks = await this.mysqlOps.candlesTable.getDatabaserange(timeStampsRange)
+        for(let i = 0; i < ticks.length; i++){
+            allTicks.push({
+                "time" : ticks[i].time,
+                "high" : parseFloat(ticks[i].high),
+                "low" : parseFloat(ticks[i].low),
+                "open" : parseFloat(ticks[i].open),
+                "close" : parseFloat(ticks[i].close),
+                "volume" : parseFloat(ticks[i].volume),
+                "closeTime" : ticks[i].closeTime
+            })
+        }
+        return allTicks
+
+    }
+
+
+    async getCandlesfromApi(pair, candleSize, noOfCandles = 0, startTime = null, endTime = null) {
+        var candleCountInfo
+
+        if(startTime && endTime){
+            candleCountInfo = {
+                "startTime" : startTime,
+                "endTime" : endTime,
+                // "limit" : 999
+            }
+        }
+        else{
+            candleCountInfo = {
+                "limit" : noOfCandles
+            }
+        }
+
         return new Promise((resolve, reject) => {
             this.exchange.candlesticks(pair, candleSize, (error, ticks, symbol) => {
                 if(error) {
@@ -26,13 +81,16 @@ class Queries {
                         "low" : parseFloat(ticks[i][3]),
                         "open" : parseFloat(ticks[i][1]),
                         "close" : parseFloat(ticks[i][4]),
+                        "volume" : parseFloat(ticks[i][5]),
                         "closeTime" : ticks[i][6]
                     })
                 }
                 resolve(allTicks);
-            }, {limit: noOfCandles});
+            }, candleCountInfo);
         })
     }
+
+
     
     
     async getPrice(pair) {

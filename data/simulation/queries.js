@@ -1,5 +1,5 @@
 class Queries{
-    constructor(queryObj, config){
+    constructor(queryObj, mysqlOps ,config){
         this.conversion = config.conversion
         this.queryObj = queryObj
         this.nPast = []
@@ -11,6 +11,7 @@ class Queries{
         if(this.config.data.type == "candles"){
             this.nPast = await this.initFetchCandles(this.config)
         }
+        await this.queryObj.initialFetch()
 
     }
 
@@ -44,7 +45,6 @@ class Queries{
     getPrice(conversion){
         
         if(this.config.data.type == "candles"){
-            console.log("getting price", this.i)
             return this.nPast[this.i-1].open
         }
     }

@@ -1,4 +1,6 @@
-queryHelper = require("./utils/queryHelper")
+const queryHelper = require("./utils/queryHelper")
+const utils = require("../../utils")
+
 
 class Table{
     
@@ -80,12 +82,12 @@ class Table{
 class candlesTable extends Table{
     constructor(connection, config, tableName){
         const schema = {
-            "time" : "int unsigned NOT NULL PRIMARY KEY", 
+            "time" : "bigint unsigned NOT NULL PRIMARY KEY", 
             "open" : "float", 
             "close" : "float", 
             "high" : "float", 
             "low" : "float", 
-            "closeTime" : "int unsigned", 
+            "closeTime" : "bigint unsigned", 
             "volume" : "float"
         }
         super(connection, config, schema, tableName)
@@ -94,12 +96,84 @@ class candlesTable extends Table{
         this.config = config
         this.tableName = tableName
     }
+
+    async getUnavailableTimeRanges(timeStampsRange){
+        var results = await this.getDatabaserange(timeStampsRange)
+        var unavailableRanges = this.getTimeRangeGaps(results, timeStampsRange)
+        return unavailableRanges
+    }
+
+    getDatabaserange(timeStampsRange){
+        return (new Promise((resolve, reject)=>{
+            var query = `select * from ${this.tableName} where time >= ${timeStampsRange["start"]} and time <= ${timeStampsRange["end"]} order by time asc`
+            console.log(query)
+            this.connection.query(query,(error, results, fields)=>{
+                if(error) throw error
+                resolve(results)
+            })
+        }));
+    }
+
+
+    
+    getTimeRangeGaps(queryTimeStamps,timeStampsRange){
+        console.log("query F/L : ",queryTimeStamps[0], queryTimeStamps[queryTimeStamps.length-1])
+        console.log(timeStampsRange)
+        var windowStart = timeStampsRange["start"]
+        var queryPointer = 0
+        var unavailableRanges = []
+        var unitTime = utils.lib.time.getUnitTime(this.config.exchange, this.config.algoConfig[this.config.algorithm].data.timeFrame)
+        console.log("nstaps : ",(timeStampsRange.end-timeStampsRange.start)/unitTime)
+        var i
+        console.log(unitTime)
+        for(i = timeStampsRange["start"]; i <= timeStampsRange["end"]; i=i+unitTime){
+            if(queryTimeStamps.length > 0 && queryPointer < queryTimeStamps.length){
+                if(queryTimeStamps[queryPointer].time == i){
+                    if(i != windowStart){
+                        unavailableRanges.push([windowStart,i])
+                        
+                    }
+                    queryPointer+=1
+                    windowStart = i+unitTime
+                    
+                }
+                
+            } 
+            
+            
+        }
+        unavailableRanges.push([windowStart,i])
+        console.log("un available ranges : ", unavailableRanges)
+        unavailableRanges = this.breakRange(unavailableRanges,unitTime)
+
+        return unavailableRanges
+    } 
+
+
+    breakRange(unavailableRanges, unitTime){
+        var newRange = []
+        var maxPerRequest = this.config.maxElementsPerRequest
+        // console.log("max : ",maxPerRequest)
+        for(var i = 0; i < unavailableRanges.length; i++){
+            var baseVal = unavailableRanges[i][0]
+            // console.log(baseVal,baseVal+maxPerRequest*unitTime, unavailableRanges[i][1])
+            while(baseVal+maxPerRequest*unitTime < unavailableRanges[i][1]){
+                newRange.push([baseVal,baseVal+maxPerRequest*unitTime])
+                baseVal = baseVal+maxPerRequest*unitTime
+            }
+            if(baseVal < unavailableRanges[i][1]){
+                newRange.push([baseVal,unavailableRanges[i][1]])
+            }
+        }
+        console.log("newRange : ",newRange)
+        return newRange
+    }
 }
 
 class transactionsTable extends Table{
     constructor(connection, config, tableName){
         const schema = {
-            "time" : "int unsigned NOT NULL PRIMARY KEY", 
+            "time" : "bigint unsigned NOT NULL PRIMARY KEY", 
             "action" : "varchar(50)", 
             "tokenPrice" : "float", 
             "netProfit" : "float", 
