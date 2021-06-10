@@ -31,7 +31,7 @@ class queryConstructor{
         var query = `INSERT INTO ${this.tableName} (`
         var column, i = 0
         for(column in this.columns){
-            if(i < this.numColumns-1)query += `${column}, `
+            if(i < this.numColumns-1) query += `${column}, `
             else query += `${column}`
             i+=1
         }

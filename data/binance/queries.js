@@ -20,16 +20,28 @@ class Queries {
         var i = 0
         while(i < UnavailableTimeRanges.length){
             try{
+                console.log("query un avail range : ", UnavailableTimeRanges[i])
                 var candles = await this.getCandlesfromApi(pair, candleSize, 0, UnavailableTimeRanges[i][0], UnavailableTimeRanges[i][1])
-                for(var n = 0; i < candles.length; n++){
+                // var candles = await this.getCandlesfromApi(pair, candleSize, 0, 1619323200000,1619340300000)
+
+
+                // process.exit(1)
+                for(var n = 0; n < candles.length; n++){
                     await this.mysqlOps.candlesTable.addRow(candles[n])
-                }   
+                }
                 i+=1
-                setTimeout({},300)
+                
+                await setTimeout(()=>{
+                    console.log("just waiting")
+                },300)
             }
             catch(error){
                 console.log("error : ",error)
-                setTimeout({},300)
+                // process.exit(1)
+                await setTimeout(()=>{
+                    console.log("just waiting")
+                },300)
+                i+=1
             }
         }
         var allTicks = []

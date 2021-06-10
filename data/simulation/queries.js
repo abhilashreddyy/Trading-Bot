@@ -24,7 +24,7 @@ class Queries{
     }
 
     getCandles(conversion, duration, limit){
-        return new Promise((resolve,reject)=>{
+        return (new Promise((resolve,reject)=>{
             if(this.config.data.timeFrame == duration && this.conversion == conversion){
                 var currVals = this.nPast.slice(this.i, this.i+limit);
                 this.i+=limit
@@ -34,16 +34,16 @@ class Queries{
             else{
                 reject("error there is a mismatch")
             }
-        })
+        }));
         
     }
 
     getTime(){
+        console.log("get time ; ",this.nPast.length,this.nPast[this.i], this.i)
         return this.nPast[this.i].time
     }
 
     getPrice(conversion){
-        
         if(this.config.data.type == "candles"){
             return this.nPast[this.i-1].open
         }

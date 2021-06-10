@@ -6,15 +6,15 @@
     "algorithm" : "movingAverage",
     "algoConfig":{
         "movingAverage" : {
-            "slowN" : 20,
-            "fastN" : 10,
-            "lastNCandles" : 50,
+            "slowN" : 300,
+            "fastN" : 150,
+            "lastNCandles" : 500,
             "data" : {
                 "type" : "candles",
-                "timeFrame" : "15m"
+                "timeFrame" : "1m"
             },
             "fetchConfig" : {
-                "nTest" : 900
+                "nTest" : 500000
             }
         }
     },

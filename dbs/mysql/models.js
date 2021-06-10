@@ -66,6 +66,7 @@ class Table{
             var insertionVars = this.queryConstructor.insertionQuery([newRow])
             this.connection.query(insertionVars["query"],[insertionVars["tupleList"]], (error, results, fields)=>{
                 if (error){
+                    
                     reject(error) 
                 }
                 else{
@@ -100,6 +101,7 @@ class candlesTable extends Table{
     async getUnavailableTimeRanges(timeStampsRange){
         var results = await this.getDatabaserange(timeStampsRange)
         var unavailableRanges = this.getTimeRangeGaps(results, timeStampsRange)
+        console.log("un available ranges : ",unavailableRanges)
         return unavailableRanges
     }
 
@@ -142,10 +144,9 @@ class candlesTable extends Table{
             
             
         }
-        unavailableRanges.push([windowStart,i])
+        if(windowStart<timeStampsRange["end"]) unavailableRanges.push([windowStart,timeStampsRange["end"]])
         console.log("un available ranges : ", unavailableRanges)
         unavailableRanges = this.breakRange(unavailableRanges,unitTime)
-
         return unavailableRanges
     } 
 
@@ -158,7 +159,7 @@ class candlesTable extends Table{
             var baseVal = unavailableRanges[i][0]
             // console.log(baseVal,baseVal+maxPerRequest*unitTime, unavailableRanges[i][1])
             while(baseVal+maxPerRequest*unitTime < unavailableRanges[i][1]){
-                newRange.push([baseVal,baseVal+maxPerRequest*unitTime])
+                newRange.push([baseVal,baseVal+maxPerRequest*unitTime-1])
                 baseVal = baseVal+maxPerRequest*unitTime
             }
             if(baseVal < unavailableRanges[i][1]){

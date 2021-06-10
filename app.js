@@ -30,7 +30,7 @@ async function init(){
     if(config.simulation){
         console.log("starting simulation")
         var traderObj = new Trader(currency1 = 0, currency2 = 1, conversion = await dataInstance.getPrice())
-        for(var i = 0; i < algoConf.fetchConfig.nTest-algoConf.lastNCandles-1; i++){
+        for(var i = 0; i < dataInstance.queries.nPast.length-algoConf.lastNCandles-1; i++){
             console.log("start")
             await algoInstance.updateCandles()
             var tradeVal = await algoInstance.whatToDo()
@@ -40,7 +40,10 @@ async function init(){
             
         }
         // return;
-        console.log("ledger details : ",traderObj.ledger)
+        console.log("ledger details : ")
+        for(let j = 0; j < traderObj.ledger.length; j++){
+            console.log(traderObj.ledger[j])
+        }
         mysqlOps.terminate()
     }
     

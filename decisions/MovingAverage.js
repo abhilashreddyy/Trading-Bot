@@ -159,6 +159,7 @@ class MovingAverageAlgo{
         
         let candleObj = await this.queryObj.getCandles(this.conversion, 
                                     this.config.data.timeFrame, 1)
+        console.log("candle Obj : ", candleObj)
         candleObj = candleObj[0]
         console.log("current candle Obj : ", candleObj)
         var c = new Date(candleObj.closeTime);
