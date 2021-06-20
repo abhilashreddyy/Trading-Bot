@@ -3,7 +3,7 @@ ledger = []
 
 class Trader{
     constructor(currency1 = 0, currency2 = 1, conversion = 0){
-        console.log("conversion : ", conversion)
+        // console.log("conversion : ", conversion)
         this.currency1 = currency1
         this.currency2 = currency2
         this.initialMoney = currency1 + conversion * currency2
@@ -22,7 +22,7 @@ class Trader{
             tradeObj["currency1AfterTrade"] = this.currency1
             tradeObj["currency2AfterTrade"] = this.currency2
             this.ledger.push(tradeObj)
-            console.log("profit : ",this.totalProfit)
+            // console.log("profit : ",this.totalProfit)
         }
         else if(tradeObj.action == "buy skip"){
             tradeObj["currency1BeforeTrade"] = this.currency1
@@ -39,7 +39,7 @@ class Trader{
             this.ledger.push(tradeObj)
         }
         else if(tradeObj.action == "sell" && this.currency2 > 0){
-            console.log(this.currency1 ,this.initialMoney)
+            // console.log(this.currency1 ,this.initialMoney)
             tradeObj["currency1BeforeTrade"] = this.currency1
             tradeObj["currency2BeforeTrade"] = this.currency2
             this.currency1 = this.convertC2ToC1(this.currency2, tradeObj.price, tradeObj.fraction)
@@ -49,17 +49,17 @@ class Trader{
             tradeObj["currency2AfterTrade"] = this.currency2
             tradeObj["profit"] = this.currency1 + this.convertC2ToC1(this.currency2, tradeObj.price,1) - this.lastSellCurrency1()
             this.ledger.push(tradeObj)
-            console.log("profit : ",this.totalProfit)
+            // console.log("profit : ",this.totalProfit)
 
             this.firstSell = 1
         }
         else if(tradeObj.action = "observe"){
-            console.log("Just Observing !!")
+            // console.log("Just Observing !!")
         }
         else{
-            console.log("Either you dont have money to buy or money to sell check account !!!")
+            // console.log("Either you dont have money to buy or money to sell check account !!!")
         }
-        console.log("total profit till now : ",this.totalProfit)
+        // console.log("total profit till now : ",this.totalProfit)
 
     }
 

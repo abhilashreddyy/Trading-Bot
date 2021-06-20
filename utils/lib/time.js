@@ -24,10 +24,17 @@ function getUnixTimestampsRange(exchange, unitSize, lastN){
     }
 }
 
+function getReadableLocalTime(unixTimeStamp){
+
+    var dt = new Date(unixTimeStamp)
+    return dt.toLocaleString()
+}
+
 
 
 module.exports = {
     getCurrentUnixTimestamp,
     getUnixTimestampsRange,
-    getUnitTime
+    getUnitTime,
+    getReadableLocalTime
 }

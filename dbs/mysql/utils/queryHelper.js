@@ -48,7 +48,7 @@ class queryConstructor{
                     tempTuple.push(row[column])
                 }
                 catch(err){
-                    console.log("ERROR :",err)
+                    // console.log("ERROR :",err)
                 }
             }
             tuplesList.push(tempTuple)

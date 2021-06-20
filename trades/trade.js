@@ -14,7 +14,7 @@
 //             tradeObj["currency1"] = this.currency1
 //             tradeObj["currency2"] = this.currency2
 //             this.ledger.push(tradeObj)
-//             console.log("profit : ",this.totalProfit)
+//             // console.log("profit : ",this.totalProfit)
 //         }
 //         else if(tradeObj.action == "sell" && this.currency2 > 0){
 //             this.currency1 = this.convertC2ToC1(this.currency2, tradeObj.price, tradeObj.fraction)
@@ -24,13 +24,13 @@
 //             tradeObj["currency2"] = this.currency2
 //             tradeObj["profit"] = this.currency1 + this.convertC2ToC1(this.currenct2, tradeObj.price,1) - this.lastSellCurrency1()
 //             this.ledger.push(tradeObj)
-//             console.log("profit : ",this.totalProfit)
+//             // console.log("profit : ",this.totalProfit)
 //         }
 //         else if(tradeObj.action = "observe"){
-//             console.log("Just Observing !!")
+//             // console.log("Just Observing !!")
 //         }
 //         else{
-//             console.log("Either you dont have money to buy or money to sell check account !!!")
+//             // console.log("Either you dont have money to buy or money to sell check account !!!")
 //         }
 
 //     }

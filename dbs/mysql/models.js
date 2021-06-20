@@ -70,7 +70,7 @@ class Table{
                     reject(error) 
                 }
                 else{
-                    console.log("sucessfully inserted ID's: ",results.insertId);
+                    // console.log("sucessfully inserted ID's: ",results.insertId);
                     resolve()
                 }
             })
@@ -101,14 +101,14 @@ class candlesTable extends Table{
     async getUnavailableTimeRanges(timeStampsRange){
         var results = await this.getDatabaserange(timeStampsRange)
         var unavailableRanges = this.getTimeRangeGaps(results, timeStampsRange)
-        console.log("un available ranges : ",unavailableRanges)
+        // console.log("un available ranges : ",unavailableRanges)
         return unavailableRanges
     }
 
     getDatabaserange(timeStampsRange){
         return (new Promise((resolve, reject)=>{
             var query = `select * from ${this.tableName} where time >= ${timeStampsRange["start"]} and time <= ${timeStampsRange["end"]} order by time asc`
-            console.log(query)
+            // console.log(query)
             this.connection.query(query,(error, results, fields)=>{
                 if(error) throw error
                 resolve(results)
@@ -119,15 +119,15 @@ class candlesTable extends Table{
 
     
     getTimeRangeGaps(queryTimeStamps,timeStampsRange){
-        console.log("query F/L : ",queryTimeStamps[0], queryTimeStamps[queryTimeStamps.length-1])
-        console.log(timeStampsRange)
+        // console.log("query F/L : ",queryTimeStamps[0], queryTimeStamps[queryTimeStamps.length-1])
+        // console.log(timeStampsRange)
         var windowStart = timeStampsRange["start"]
         var queryPointer = 0
         var unavailableRanges = []
         var unitTime = utils.lib.time.getUnitTime(this.config.exchange, this.config.algoConfig[this.config.algorithm].data.timeFrame)
-        console.log("nstaps : ",(timeStampsRange.end-timeStampsRange.start)/unitTime)
+        // console.log("nstaps : ",(timeStampsRange.end-timeStampsRange.start)/unitTime)
         var i
-        console.log(unitTime)
+        // console.log(unitTime)
         for(i = timeStampsRange["start"]; i <= timeStampsRange["end"]; i=i+unitTime){
             if(queryTimeStamps.length > 0 && queryPointer < queryTimeStamps.length){
                 if(queryTimeStamps[queryPointer].time == i){
@@ -145,7 +145,7 @@ class candlesTable extends Table{
             
         }
         if(windowStart<timeStampsRange["end"]) unavailableRanges.push([windowStart,timeStampsRange["end"]])
-        console.log("un available ranges : ", unavailableRanges)
+        // console.log("un available ranges : ", unavailableRanges)
         unavailableRanges = this.breakRange(unavailableRanges,unitTime)
         return unavailableRanges
     } 
@@ -154,10 +154,10 @@ class candlesTable extends Table{
     breakRange(unavailableRanges, unitTime){
         var newRange = []
         var maxPerRequest = this.config.maxElementsPerRequest
-        // console.log("max : ",maxPerRequest)
+        // // console.log("max : ",maxPerRequest)
         for(var i = 0; i < unavailableRanges.length; i++){
             var baseVal = unavailableRanges[i][0]
-            // console.log(baseVal,baseVal+maxPerRequest*unitTime, unavailableRanges[i][1])
+            // // console.log(baseVal,baseVal+maxPerRequest*unitTime, unavailableRanges[i][1])
             while(baseVal+maxPerRequest*unitTime < unavailableRanges[i][1]){
                 newRange.push([baseVal,baseVal+maxPerRequest*unitTime-1])
                 baseVal = baseVal+maxPerRequest*unitTime
@@ -166,7 +166,7 @@ class candlesTable extends Table{
                 newRange.push([baseVal,unavailableRanges[i][1]])
             }
         }
-        console.log("newRange : ",newRange)
+        // console.log("newRange : ",newRange)
         return newRange
     }
 }

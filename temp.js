@@ -20,7 +20,7 @@ var temp = {
 
 this.connection.query("select * from ETHUSDT_15m_candles where time >= 1622250900000 and time <= 1623060900000 order by time asc",(error, results, fields)=>{
   if(error) throw error
-  console.log("results : ",results, fields)
-  console.log(dbops.candlesTable.getTimeRangeGaps(results, temp))
+  // console.log("results : ",results, fields)
+  // console.log(dbops.candlesTable.getTimeRangeGaps(results, temp))
 })
 

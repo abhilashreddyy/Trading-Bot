@@ -14,7 +14,7 @@ class MovingAvg{
 
 
     initialCalculation(){
-        // console.log(this.prevCandles)
+        // // console.log(this.prevCandles)
         this.calculateInitialMovingAverage()
         this.calculateInitialMaxMin()
         
@@ -25,11 +25,11 @@ class MovingAvg{
             return // Throw error
         }
         else{
-            console.log("calculating initial moving averages")
-            console.log("length of moving AVG : ",this.n)
-            console.log("length of all candles : ",this.prevCandles.length)
+            // console.log("calculating initial moving averages")
+            // console.log("length of moving AVG : ",this.n)
+            // console.log("length of all candles : ",this.prevCandles.length)
             for(let i = this.n; i <= this.prevCandles.length; i++){
-                console.log("prev candles : ", i-this.n, i)
+                // console.log("prev candles : ", i-this.n, i)
                 this.prevMovingAvg.push(this.calculateMovingAvg(i, 0))
             }
         }
@@ -54,19 +54,19 @@ class MovingAvg{
     calculateMovingAvg(i, temp = 1){ // i == index in prevCandles
         let result = 0;
         let tempSlice = this.prevCandles.slice(i-this.n, i)
-        // console.log("prev candles : ", this.prevCandles)
+        // // console.log("prev candles : ", this.prevCandles)
         
-        console.log("averaging candles : ", tempSlice)
+        // console.log("averaging candles : ", tempSlice)
         
         for(let i = 0; i < tempSlice.length; i++){
-            // console.log(`current candleval ${i} : `, tempSlice[i])
-            console.log("current moving Avg closing val/time/closeTime : ",tempSlice[i].close," / ",(new Date(tempSlice[i].time)), (new Date(tempSlice[i].closeTime)))
+            // // console.log(`current candleval ${i} : `, tempSlice[i])
+            // console.log("current moving Avg closing val/time/closeTime : ",tempSlice[i].close," / ",(new Date(tempSlice[i].time)), (new Date(tempSlice[i].closeTime)))
             // result += (parseFloat(tempSlice[i].open)+parseFloat(tempSlice[i].close))/2;
             result += tempSlice[i][this.metric]
         }
         // moving avg logic
         var val = result/this.n
-        console.log("moving average : ",val, "\n")
+        // console.log("moving average : ",val, "\n")
         return val
     }
 
@@ -78,18 +78,18 @@ class MovingAvg{
 
 
     updateMovingAvg(candleObj){
-        console.log("updating moving avg")
-        console.log("pushing new candle val : ", candleObj)
+        // console.log("updating moving avg")
+        // console.log("pushing new candle val : ", candleObj)
         this.prevCandles.push(candleObj)
         
         let newMovingAvg = this.calculateMovingAvg(this.prevCandles.length-1)
-        console.log("calculating moving average : ", newMovingAvg)
+        // console.log("calculating moving average : ", newMovingAvg)
         this.prevMovingAvg.push(newMovingAvg)
 
     }
 
     getLatestNAvg(l){
-        // console.log(this.prevMovingAvg)
+        // // console.log(this.prevMovingAvg)
 
         return this.prevMovingAvg[this.prevMovingAvg.length-l-1]
     }
@@ -98,7 +98,7 @@ class MovingAvg{
         var oldRange = (this.currRangeMax - this.currRangeMin)  
         var newRange = 1-0
         var newValue = (((oldValue - this.currRangeMin) * newRange) / oldRange) + 0
-        console.log("quantified Value : ",newValue)
+        // console.log("quantified Value : ",newValue)
         return newValue
     }
 
@@ -108,11 +108,11 @@ class MovingAvg{
             var latestButOneAvg = this.getLatestNAvg(l+1)
             latestAvg = this.getQuantifiedAvg(latestAvg) // might not work if l is very large outof the window problem
             latestButOneAvg = this.getQuantifiedAvg(latestButOneAvg)
-            console.log("latest slope : ", latestAvg-latestButOneAvg)
+            // console.log("latest slope : ", latestAvg-latestButOneAvg)
             return latestAvg-latestButOneAvg
         }
         else{
-            console.log("error") // throw error
+            // console.log("error") // throw error
         }
         
     }
@@ -149,23 +149,23 @@ class MovingAverageAlgo{
         let prevCandles = await this.queryObj.getCandles
                                             (this.conversion, this.config.data.timeFrame, 
                                                 this.config.lastNCandles)
-        // console.log("hello ; ",prevCandles)
+        // // console.log("hello ; ",prevCandles)
         this.fastMovingAvg = new MovingAvg(this.config.fastN,[...prevCandles])
         this.slowMovingAvg = new MovingAvg(this.config.slowN, [...prevCandles])
         this.currentStatus = this.getCurrentStatus()
     }
 
-    async updateCandles(){
+    async update(){
         
         let candleObj = await this.queryObj.getCandles(this.conversion, 
                                     this.config.data.timeFrame, 1)
-        console.log("candle Obj : ", candleObj)
+        // console.log("candle Obj : ", candleObj)
         candleObj = candleObj[0]
-        console.log("current candle Obj : ", candleObj)
+        // console.log("current candle Obj : ", candleObj)
         var c = new Date(candleObj.closeTime);
         var o = new Date(candleObj.time);
 
-        console.log("time and closing time:",o,c)
+        // console.log("time and closing time:",o,c)
         this.fastMovingAvg.update(candleObj)
         this.slowMovingAvg.update(candleObj)
         // this.lastTransaction.update(lastTransaction)
@@ -175,7 +175,7 @@ class MovingAverageAlgo{
 
 
     async whatToDo(){
-        console.log("current status : ", this.currentStatus)
+        // console.log("current status : ", this.currentStatus)
         if(this.isCrossing()){
             if(this.currentStatus == "raising" ){
                 if(this.sellLock == 0){
@@ -239,8 +239,8 @@ class MovingAverageAlgo{
     }
 
     isCrossing(){
-        console.log("slow moving avg curr/last: ", this.slowMovingAvg.getLatestNAvg(0), this.slowMovingAvg.getLatestNAvg(1))
-        console.log("fast moving avg curr/last: ", this.fastMovingAvg.getLatestNAvg(0), this.fastMovingAvg.getLatestNAvg(1))
+        // console.log("slow moving avg curr/last: ", this.slowMovingAvg.getLatestNAvg(0), this.slowMovingAvg.getLatestNAvg(1))
+        // console.log("fast moving avg curr/last: ", this.fastMovingAvg.getLatestNAvg(0), this.fastMovingAvg.getLatestNAvg(1))
         if(this.slowMovingAvg.getLatestNAvg(1) > this.fastMovingAvg.getLatestNAvg(1) &&
            this.slowMovingAvg.getLatestNAvg(0) < this.fastMovingAvg.getLatestNAvg(0)){
             return 1
@@ -268,7 +268,7 @@ class MovingAverageAlgo{
     checkBuySlopeFavaorability(){
         var fastMovingSlope = this.fastMovingAvg.getLastNSlope(0)
         var slowMovingSlope = this.slowMovingAvg.getLastNSlope(0)
-        console.log("fast/slow moving slope : ",fastMovingSlope," / ",slowMovingSlope)
+        // console.log("fast/slow moving slope : ",fastMovingSlope," / ",slowMovingSlope)
         if((fastMovingSlope < 0 && slowMovingSlope < 0)||
             fastMovingSlope < 0 && slowMovingSlope < 0){
             return 0

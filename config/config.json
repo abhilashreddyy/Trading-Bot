@@ -3,7 +3,7 @@
     "exchange" : "binance",
     "maxElementsPerRequest" : 499,
     "conversion" : "ETHUSDT", 
-    "algorithm" : "movingAverage",
+    "algorithm" : "minMaxWindow",
     "algoConfig":{
         "movingAverage" : {
             "slowN" : 300,
@@ -14,7 +14,23 @@
                 "timeFrame" : "1m"
             },
             "fetchConfig" : {
-                "nTest" : 500000
+                "nTest" : 5000
+            }
+        },
+        "minMaxWindow" : {
+            "sellPercentile" : 75,
+            "buyPercentile" : 25,
+            "maxSelldropVal" : 1,
+            "maxSelldropPercent" : 1,
+            "maxBuyraiseVal" : 1,
+            "maxbuyraisePercent" : 1,
+            "lastNCandles" : 100,
+            "data" : {
+                "type" : "candles",
+                "timeFrame" : "1m"
+            },
+            "fetchConfig" : {
+                "nTest" : 1440
             }
         }
     },
@@ -23,7 +39,7 @@
     },
     "database" : {
         "mysql" : {
-            "host"     : "localhost"
+            "host"  : "localhost"
         }
     }
     

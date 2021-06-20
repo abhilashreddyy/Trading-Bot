@@ -20,7 +20,7 @@ class Queries {
         var i = 0
         while(i < UnavailableTimeRanges.length){
             try{
-                console.log("query un avail range : ", UnavailableTimeRanges[i])
+                // console.log("query un avail range : ", UnavailableTimeRanges[i])
                 var candles = await this.getCandlesfromApi(pair, candleSize, 0, UnavailableTimeRanges[i][0], UnavailableTimeRanges[i][1])
                 // var candles = await this.getCandlesfromApi(pair, candleSize, 0, 1619323200000,1619340300000)
 
@@ -32,29 +32,34 @@ class Queries {
                 i+=1
                 
                 await setTimeout(()=>{
-                    console.log("just waiting")
+                    // console.log("just waiting")
                 },300)
             }
             catch(error){
-                console.log("error : ",error)
+                // console.log("error : ",error)
                 // process.exit(1)
                 await setTimeout(()=>{
-                    console.log("just waiting")
+                    // console.log("just waiting")
                 },300)
                 i+=1
             }
         }
         var allTicks = []
+        // console.log("befire ; ", timeStampsRange)
         var ticks = await this.mysqlOps.candlesTable.getDatabaserange(timeStampsRange)
+        var readableTime = new Date(ticks[i].time)
+
         for(let i = 0; i < ticks.length; i++){
             allTicks.push({
                 "time" : ticks[i].time,
+                "readableTime" : utils.lib.time.getReadableLocalTime(ticks[i].time),
                 "high" : parseFloat(ticks[i].high),
                 "low" : parseFloat(ticks[i].low),
                 "open" : parseFloat(ticks[i].open),
                 "close" : parseFloat(ticks[i].close),
                 "volume" : parseFloat(ticks[i].volume),
-                "closeTime" : ticks[i].closeTime
+                "closeTime" : ticks[i].closeTime,
+                "readableCloseTime" : utils.lib.time.getReadableLocalTime(ticks[i].closeTime)
             })
         }
         return allTicks
