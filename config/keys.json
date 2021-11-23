@@ -1,0 +1,12 @@
+{
+    "binance" : {
+        "apiKey" : "VUHBlXVPDCvSd1518fl2u04sdj2bygl40Ya3AnaJvGSvqqmFYXICcQBcxrhPbMmv",
+        "secretKey" : "I2HEzWTdh9iySbqzyLERMdfGixDHfYh6vd5Mkup2fT0ewD6k1XyUsjgqQ61spCmY"
+    },
+    "database" : {
+        "mysql" : {
+            "user"     : "abhi",
+            "password" : "@13961220@"
+        }
+    }
+}
