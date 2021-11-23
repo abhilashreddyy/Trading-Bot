@@ -1,4 +1,4 @@
-# Trading-Bot
+# Quantative Trading API
 This is a trading API which helps you to test the performance of your custom Traing Algorithm in quantative trading. Currently It supports Binance API for crypto trading
 
 
