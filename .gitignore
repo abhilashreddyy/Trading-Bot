@@ -108,4 +108,4 @@ dist
 log.txt
 
 # config file
-# config/keys.json
+config/keys.json
