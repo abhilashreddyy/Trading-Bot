@@ -106,3 +106,6 @@ dist
 
 # log files
 log.txt
+
+# config file
+config/keys.json
