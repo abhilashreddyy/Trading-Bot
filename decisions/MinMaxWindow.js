@@ -186,8 +186,11 @@ class MinMaxWindow{
         }
         
         if(this.sellLock == 0 && this.minMaxTracker.checkSellBaseCondition(this.config.sellPercentile)){
-            console.log("entered sell")
-            console.log("max after cross decision params // sell: ", this.minMaxTracker.getLatestNCandle(0).close, this.maxAfterCrossingSellTrigger)
+            this.buyTrigger = null
+            this.minAfterCrossingBuyTrigger = Number.POSITIVE_INFINITY
+
+            // console.log("entered sell")
+            // console.log("max after cross decision params // sell: ", this.minMaxTracker.getLatestNCandle(0).close, this.maxAfterCrossingSellTrigger)
 
             this.maxAfterCrossingSellTrigger = Math.max(this.minMaxTracker.getLatestNCandle(0).close, this.maxAfterCrossingSellTrigger)
         
@@ -200,8 +203,11 @@ class MinMaxWindow{
 
         }
         else if(this.buyLock == 0 && this.minMaxTracker.checkBuyBaseCondition(this.config.buyPercentile)){
-            console.log("entered buy")
-            console.log("min after cross decision params // buy: ", this.minMaxTracker.getLatestNCandle(0).close, this.minAfterCrossingBuyTrigger)
+            this.sellTrigger = null
+            this.maxAfterCrossingSellTrigger = Number.NEGATIVE_INFINITY
+
+            // console.log("entered buy")
+            // console.log("min after cross decision params // buy: ", this.minMaxTracker.getLatestNCandle(0).close, this.minAfterCrossingBuyTrigger)
 
             this.minAfterCrossingBuyTrigger = Math.min(this.minMaxTracker.getLatestNCandle(0).close, this.minAfterCrossingBuyTrigger)
             
@@ -212,23 +218,23 @@ class MinMaxWindow{
                 this.minAfterCrossingBuyTrigger + (buyBase - this.minAfterCrossingBuyTrigger)*(this.config.maxbuyraisePercent/100))
 
         }
-        console.log("\n\n")
-        console.log("time : ", this.minMaxTracker.getLatestNCandle(0).readableTime)
-        console.log("state buy-sell lock : ", this.buyLock," - ", this.sellLock)
-        console.log("current min-max : ", this.minMaxTracker.getCurrentMinMaxInfo())
+        // console.log("\n\n")
+        // console.log("time : ", this.minMaxTracker.getLatestNCandle(0).readableTime)
+        // console.log("state buy-sell lock : ", this.buyLock," - ", this.sellLock)
+        // console.log("current min-max : ", this.minMaxTracker.getCurrentMinMaxInfo())
 
-        console.log("curr-last candle obj : ", this.minMaxTracker.getLatestNCandle(0).close, this.minMaxTracker.getLatestNCandle(1).close)
-        // console.log("latest n th candle ; ",this.minMaxTracker.checkBuyBaseCondition(10))
-        console.log("maxAfterCrossingSellTrigger : ", this.maxAfterCrossingSellTrigger)
-        console.log("sell base : ",this.minMaxTracker.checkSellBaseCondition(this.config.sellPercentile), this.minMaxTracker.getTopNPercentile(this.config.sellPercentile))
-        console.log("raise after sell : ", (sellBase - this.maxAfterCrossingSellTrigger)*(this.config.maxSellraisePercent/100))
+        // console.log("curr-last candle obj : ", this.minMaxTracker.getLatestNCandle(0).close, this.minMaxTracker.getLatestNCandle(1).close)
+        // // console.log("latest n th candle ; ",this.minMaxTracker.checkBuyBaseCondition(10))
+        // console.log("maxAfterCrossingSellTrigger : ", this.maxAfterCrossingSellTrigger)
+        // console.log("sell base : ",this.minMaxTracker.checkSellBaseCondition(this.config.sellPercentile), this.minMaxTracker.getTopNPercentile(this.config.sellPercentile))
+        // console.log("raise after sell : ", (sellBase - this.maxAfterCrossingSellTrigger)*(this.config.maxSellraisePercent/100))
 
 
-        console.log("minAfterCrossingBuyTrigger : ", this.minAfterCrossingBuyTrigger)
-        console.log("buy base : ",this.minMaxTracker.checkBuyBaseCondition(this.config.buyPercentile), this.minMaxTracker.getTopNPercentile(this.config.buyPercentile))
-        console.log("raise after buy : ", (buyBase - this.minAfterCrossingBuyTrigger)*(this.config.maxbuyraisePercent/100))
+        // console.log("minAfterCrossingBuyTrigger : ", this.minAfterCrossingBuyTrigger)
+        // console.log("buy base : ",this.minMaxTracker.checkBuyBaseCondition(this.config.buyPercentile), this.minMaxTracker.getTopNPercentile(this.config.buyPercentile))
+        // console.log("raise after buy : ", (buyBase - this.minAfterCrossingBuyTrigger)*(this.config.maxbuyraisePercent/100))
 
-        console.log("buy trigger / sell trigger : ",this.buyTrigger , this.sellTrigger)
+        // console.log("buy trigger / sell trigger : ",this.buyTrigger , this.sellTrigger)
         
 
 
@@ -238,7 +244,7 @@ class MinMaxWindow{
 
     async whatToDo(){
         var lastCandle = this.minMaxTracker.getLatestNCandle(0)
-        if(this.sellLock == 0 &&
+        if(this.sellLock == 0 && this.sellTrigger != null &&
         this.sellTrigger > this.minMaxTracker.getLatestNCandle(0).close){
             // console.log("entered sell")
             this.buyLock = 0
@@ -259,7 +265,7 @@ class MinMaxWindow{
             }
         
         }
-        else if(this.buyLock == 0 && 
+        else if(this.buyLock == 0 && this.buyTrigger != null &&
                 this.buyTrigger < this.minMaxTracker.getLatestNCandle(0).close){
             // console.log("entered buy")
             this.buyLock = 1

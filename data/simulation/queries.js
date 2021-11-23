@@ -40,7 +40,7 @@ class Queries{
 
     getTime(){
         // console.log("get time ; ",this.nPast.length,this.nPast[this.i], this.i)
-        return this.nPast[this.i].time
+        return this.nPast[this.i-1].time
     }
 
     getPrice(conversion){

@@ -1,14 +1,13 @@
 
 {
     "binance" : {
-        "apiKey" : "VUHBlXVPDCvSd1518fl2u04sdj2bygl40Ya3AnaJvGSvqqmFYXICcQBcxrhPbMmv",
-        "secretKey" : "I2HEzWTdh9iySbqzyLERMdfGixDHfYh6vd5Mkup2fT0ewD6k1XyUsjgqQ61spCmY"
+        "apiKey" : "<Your API KEY>",
+        "secretKey" : "<Your Secret KEY>"
     },
     "database" : {
         "mysql" : {
-            "user"     : "abhi",
-            "password" : "@13961220@"
+            "user"     : "<LOCAL MYSQL USER NAME>",
+            "password" : "LOCAL MYSQL PASSWORD"
         }
     }
-    
 }

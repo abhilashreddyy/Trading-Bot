@@ -20,17 +20,18 @@
         "minMaxWindow" : {
             "sellPercentile" : 75,
             "buyPercentile" : 25,
-            "maxSelldropVal" : 1,
-            "maxSelldropPercent" : 1,
-            "maxBuyraiseVal" : 1,
-            "maxbuyraisePercent" : 1,
-            "lastNCandles" : 100,
+            "maxSelldropVal" : 50,
+            "maxSelldropPercent" : 50,
+            "maxBuyraiseVal" : 50,
+            "maxbuyraisePercent" : 30,
+            "lastNCandles" : 30,
             "data" : {
                 "type" : "candles",
                 "timeFrame" : "1m"
             },
             "fetchConfig" : {
-                "nTest" : 1440
+
+                "nTest" : 2500
             }
         }
     },

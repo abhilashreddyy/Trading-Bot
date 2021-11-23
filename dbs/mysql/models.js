@@ -133,16 +133,12 @@ class candlesTable extends Table{
                 if(queryTimeStamps[queryPointer].time == i){
                     if(i != windowStart){
                         unavailableRanges.push([windowStart,i])
-                        
                     }
                     queryPointer+=1
                     windowStart = i+unitTime
                     
-                }
-                
+                }    
             } 
-            
-            
         }
         if(windowStart<timeStampsRange["end"]) unavailableRanges.push([windowStart,timeStampsRange["end"]])
         // console.log("un available ranges : ", unavailableRanges)

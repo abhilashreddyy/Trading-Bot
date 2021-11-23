@@ -86,6 +86,7 @@ class Queries {
         return new Promise((resolve, reject) => {
             this.exchange.candlesticks(pair, candleSize, (error, ticks, symbol) => {
                 if(error) {
+                    console.log(error)
                     reject(error);
                     return;
                 }
